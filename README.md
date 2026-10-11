@@ -114,24 +114,20 @@ When you're ready, run:
 npm run reset-project
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+[task 2 (1).docx](https://github.com/user-attachments/files/33297796/task.2.1.docx)
 
-### Other setup steps
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+youtube link: 
+https://youtu.be/Sh2KHbuWlGM?si=tcdL7iarcmVYioVH 
 
-## Learn more
+<img width="1588" height="926" alt="ad 1" src="https://github.com/user-attachments/assets/5633e983-20eb-4c03-a1ff-22540c343d42" />
+<img width="1597" height="910" alt="adventure" src="https://github.com/user-attachments/assets/1009c62a-7089-4e5c-9e5d-38b5fcfd13f3" />
+<img width="1591" height="925" alt="ad6" src="https://github.com/user-attachments/assets/7abd796f-5a50-42a6-a284-891deba5d66c" />
+<img width="1591" height="925" alt="ad6" src="https://github.com/user-attachments/assets/7e00d128-835c-42c1-b41f-eaa639002ca3" />
+<img width="1607" height="913" alt="ad5" src="https://github.com/user-attachments/assets/68dcf64d-fbb1-4d4f-9c72-193d12aa05e3" />
+<img width="1597" height="916" alt="ad3" src="https://github.com/user-attachments/assets/eab33abf-729c-4dae-b443-51662ac10676" />
+<img width="1601" height="923" alt="ad2" src="https://github.com/user-attachments/assets/6e9334ed-a0d3-425b-83b5-543051142541" />
+<img width="1588" height="926" alt="ad 1" src="https://github.com/user-attachments/assets/f4278499-3b02-4e90-aa55-c7b8966a6738" />
 
-To learn more about developing your project with Expo, look at the following resources:
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
 
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
