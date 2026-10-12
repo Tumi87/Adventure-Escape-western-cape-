@@ -134,6 +134,7 @@ Content — package/activity details are in the ACTIVITIES array; nav links, foo
 
 ## youtube link: 
 https://youtu.be/Sh2KHbuWlGM?si=tcdL7iarcmVYioVH 
+https://youtu.be/lGpi9A5tNF0?si=hgkufodnjNwr-lbi
 
 <img width="1588" height="926" alt="ad 1" src="https://github.com/user-attachments/assets/5633e983-20eb-4c03-a1ff-22540c343d42" />
 <img width="1597" height="910" alt="adventure" src="https://github.com/user-attachments/assets/1009c62a-7089-4e5c-9e5d-38b5fcfd13f3" />
