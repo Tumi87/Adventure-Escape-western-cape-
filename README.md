@@ -1,7 +1,7 @@
-# Adventure Escape SA
+## Adventure Escape SA
 This README provides clear documentation for the Adventure Escape SA project.
 Here is a summary breakdown of your project details for quick reference:
-Key Highlights
+## Key Highlights
  * Tech Stack: Expo, React Native, TypeScript, Expo Router, React Navigation.
  * Target Audience: Outdoor adventure and eco-tourism enthusiasts in Cape Town, Western Cape.
  * Core Application Capabilities:
@@ -19,7 +19,7 @@ Quick Reference Commands
 | Start with Tunnel (Restricted Networks) | npx expo start --tunnel |
 | Clear Cache & Restart | npx expo start --clear |
 Pricing & Tiered Discount Logic
-Discounts are calculated based on the total number of bookings added to the quotation (not total guests):
+## Discounts are calculated based on the total number of bookings added to the quotation (not total guests):
 | Quantity Tier | Discount | Example Calculation (2 × R1,500 packages) |
 | 1 Booking | 0% | Subtotal: R3,000 |
 | 2 Bookings | 5% | Discount: -R150 |
@@ -106,18 +106,33 @@ In the output, you'll find options to open the app in a
 
 You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
-## Get a fresh project
 
-When you're ready, run:
 
-```bash
-npm run reset-project
-```
+## Name	Student Number	Role
+Rayan Bvulani	ST10497168	Team leader
+Itumeleng Ndlovu	ST10515918	Team secretary
+Asukia Ebuta	ST10531063	Member / designer & researcher
+
+The app is a single page that swaps its content based on the URL hash (#home, #about, #overview, #package/<id>, #fees, #contact), so the back/forward buttons work and a page can be bookmarked or linked to directly.
+
+Screen	What it does
+Home	Hero banner, "View Packages" / "Get Quote" buttons, 3 featured packages
+About Us	Founder story and mission, matching the wireframe's two-column layout
+Overview	All / Packages / Individual Activities filter tabs, full catalogue
+Package Detail	Photo gallery (click thumbnails), collapsible Description / What's Included / Meeting Point / Cancellation Policy, date picker, Book Now, Add to Quote
+Fees	Add/remove any package or activity; subtotal, discount tier and total recalculate live
+Contact Us	Name / email / phone / package / message form with validation and a sent confirmation
+Discount rule (Fees page) 
+
+## Customising
+Colours — defined once as CSS variables at the top of the <style> block (--forest, --canyon, --sand, etc.), so the whole palette can be changed from one place.
+Fonts — Fraunces (headings) and Inter (body text), loaded from Google Fonts.
+Content — package/activity details are in the ACTIVITIES array; nav links, footer text and the Contact page's business info are plain HTML in the relevant screen...() function.
 
 [task 2 (1).docx](https://github.com/user-attachments/files/33297796/task.2.1.docx)
 
 
-youtube link: 
+## youtube link: 
 https://youtu.be/Sh2KHbuWlGM?si=tcdL7iarcmVYioVH 
 
 <img width="1588" height="926" alt="ad 1" src="https://github.com/user-attachments/assets/5633e983-20eb-4c03-a1ff-22540c343d42" />
