@@ -1,49 +1,53 @@
-import { useNavigation } from '@react-navigation/native';
-import { useState } from 'react';
-import { Image, Pressable, Text, View } from 'react-native';
-import { Btn, Card, Field, Screen } from '../components/components';
-import { IMAGES } from '../images';
-import { C } from '../theme';
+import React, { useState } from 'react';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Button from '../components/Button';
+import Field from '../components/Field';
+import { useQuote } from '../context/QuoteContext';
+import { common } from '../styles';
+import { colors } from '../theme';
+import { FormErrors, Navigate } from '../types';
+import { isEmail } from '../utils';
 
-export default function LoginScreen() {
-  const nav = useNavigation<any>();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+type LoginErrors = FormErrors<'email' | 'password'>;
 
-  const login = () => {
-    if (!email.includes('@') || password.length < 4) {
-      setError('Enter a valid email and a password of at least 4 characters.');
-      return;
+export default function LoginScreen({ go }: { go: Navigate }) {
+  const { login } = useQuote();
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [remember, setRemember] = useState<boolean>(false);
+  const [errors, setErrors] = useState<LoginErrors>({});
+
+  const submit = (): void => {
+    const e: LoginErrors = {};
+    if (!isEmail(email)) e.email = 'Enter a valid email address.';
+    if (password.length < 6) e.password = 'Password must be at least 6 characters.';
+    setErrors(e);
+    if (Object.keys(e).length === 0) {
+      login({ name: email.trim().split('@')[0], email: email.trim() });
+      go({ name: 'home' });
     }
-    setError('');
-    nav.replace('Main');
   };
 
   return (
-    <Screen title="Login" subtitle="A simpler way to plan your next escape.">
-      <View style={{ alignItems: 'center', gap: 8, marginVertical: 8 }}>
-        <Image source={IMAGES.logo} style={{ width: 64, height: 64, borderRadius: 32 }} />
-        <Text style={{ fontSize: 20, fontWeight: '800', color: C.green }}>Welcome back, explorer.</Text>
-        <Text style={{ color: C.muted, textAlign: 'center', fontSize: 12 }}>
-          Sign in to keep your quotes and adventure details in one place.
-        </Text>
-      </View>
-      <Field label="Email" placeholder="Enter your email address" value={email}
-        onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" />
-      <Field label="Password" placeholder="Enter your password" value={password}
-        onChangeText={setPassword} secureTextEntry />
-      <Text style={{ color: C.orange, textAlign: 'right', fontSize: 12 }}>Forgot password?</Text>
-      {!!error && <Text style={{ color: '#A62B1F', fontSize: 12 }}>{error}</Text>}
-      <Btn label="Log in" onPress={login} />
-      <Text style={{ color: C.muted, textAlign: 'center', fontSize: 12 }}>New to Adventure Escape SA?</Text>
-      <Btn label="Create an account" variant="outline" onPress={() => nav.replace('Main')} />
-      <Card style={{ backgroundColor: C.mint }}>
-        <Text style={{ fontWeight: '700', color: C.green }}>Just browsing? No account needed.</Text>
-        <Pressable onPress={() => nav.replace('Main')}>
-          <Text style={{ color: C.green, fontSize: 12 }}>Continue as guest</Text>
-        </Pressable>
-      </Card>
-    </Screen>
+    <ScrollView contentContainerStyle={[common.pad, { paddingTop: 40 }]} keyboardShouldPersistTaps="handled">
+      <View style={styles.logo}><Text style={{ fontSize: 34, color: colors.sand }}>▲</Text></View>
+      <Text style={[common.h1, { textAlign: 'center' }]}>Welcome back</Text>
+      <Field label="Email Address" value={email} onChangeText={setEmail} error={errors.email}
+        keyboardType="email-address" autoCapitalize="none" autoComplete="email" />
+      <Field label="Password" value={password} onChangeText={setPassword} error={errors.password}
+        secureTextEntry autoComplete="password" />
+      <TouchableOpacity style={styles.remember} onPress={() => setRemember(r => !r)}
+        accessibilityRole="checkbox" accessibilityState={{ checked: remember }}>
+        <Text style={{ fontSize: 20, color: colors.green }}>{remember ? '☑' : '☐'}</Text>
+        <Text style={[common.p, { marginLeft: 8, marginBottom: 0 }]}>Remember me</Text>
+      </TouchableOpacity>
+      <Button title="Log In" onPress={submit} />
+      <Button title="Continue as guest" alt onPress={() => go({ name: 'home' })} />
+    </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  logo: { width: 80, height: 80, borderRadius: 40, backgroundColor: colors.green, alignSelf: 'center', alignItems: 'center', justifyContent: 'center', marginBottom: 12 },
+  remember: { flexDirection: 'row', alignItems: 'center', minHeight: 44 },
+});

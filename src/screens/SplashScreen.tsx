@@ -1,38 +1,54 @@
-import { useNavigation } from '@react-navigation/native';
-import { Image, Pressable, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Btn } from '../components/components';
-import { IMAGES } from '../images';
-import { C } from '../theme';
+import React from 'react';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Navigate } from '../types';
+import { colors } from '../theme';
 
-export default function SplashScreen() {
-  const nav = useNavigation<any>();
+const logo = require('../../assets/logo.jpg');
+const banner = require('../../assets/cape_town.jpg');
+
+export default function SplashScreen({ go }: { go: Navigate }) {
   return (
-    <View style={{ flex: 1, backgroundColor: C.green }}>
-      <SafeAreaView style={{ alignItems: 'center', paddingVertical: 24, gap: 6 }}>
-        <Image source={IMAGES.logo} style={{ width: 84, height: 84, borderRadius: 42 }} />
-        <Text style={{ color: C.white, fontSize: 20, fontWeight: '800', textAlign: 'center' }}>
-          ADVENTURE{'\n'}ESCAPE SA
-        </Text>
-        <Text style={{ color: '#B9C9BC', fontSize: 11 }}>CAPE TOWN, WESTERN CAPE</Text>
-      </SafeAreaView>
+    <ScrollView style={styles.wrap} contentContainerStyle={styles.content} bounces={false}>
+      <View style={styles.top}>
+        <Image source={logo} style={styles.logo} resizeMode="contain" accessibilityLabel="Adventure Escape SA logo" />
+        <Text style={styles.title}>ADVENTURE{'\n'}ESCAPE SA</Text>
+        <Text style={styles.place}>CAPE TOWN, WESTERN CAPE</Text>
+      </View>
 
-      <Image source={IMAGES.hero} style={{ width: '100%', flex: 1 }} resizeMode="cover" />
+      <Image source={banner} style={styles.banner} resizeMode="cover"
+        accessibilityLabel="Aerial view of Cape Town with the stadium and the coast" />
 
-      <SafeAreaView edges={['bottom']} style={{ padding: 20, gap: 12 }}>
-        <Text style={{ color: C.white, fontSize: 26, fontWeight: '800' }}>
-          Find your next great escape.
-        </Text>
-        <Text style={{ color: '#D5DFD6' }}>
-          Guided outdoor adventures. Shared memories. A little closer to nature.
-        </Text>
-        <Btn label="Explore adventures" onPress={() => nav.replace('Main')} />
-        <Pressable onPress={() => nav.navigate('Login')}>
-          <Text style={{ color: '#D5DFD6', textAlign: 'center', fontSize: 13 }}>
-            Already have an account? Log in
-          </Text>
-        </Pressable>
-      </SafeAreaView>
-    </View>
+      <View style={styles.bottom}>
+        <Text style={styles.heading}>Find your next great escape.</Text>
+        <Text style={styles.sub}>Guided outdoor adventures. Shared memories. A little closer to nature.</Text>
+
+        <TouchableOpacity style={styles.cta} onPress={() => go({ name: 'home' })}
+          accessibilityRole="button" accessibilityLabel="Explore adventures">
+          <Text style={styles.ctaText}>Explore adventures</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.loginRow} onPress={() => go({ name: 'login' })}
+          accessibilityRole="button" accessibilityLabel="Already have an account? Log in">
+          <Text style={styles.login}>Already have an account? Log in</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  wrap: { flex: 1, backgroundColor: colors.green },
+  content: { flexGrow: 1 },
+  top: { alignItems: 'center', paddingTop: 28, paddingBottom: 20, paddingHorizontal: 24 },
+  logo: { width: 88, height: 88, marginBottom: 12 },
+  title: { color: colors.white, fontSize: 24, fontWeight: '800', textAlign: 'center', letterSpacing: 0.5, lineHeight: 30 },
+  place: { color: colors.sand, fontSize: 12, letterSpacing: 0.5, marginTop: 8 },
+  banner: { width: '100%', height: 190 },
+  bottom: { padding: 20, paddingTop: 22 },
+  heading: { color: colors.white, fontSize: 27, fontWeight: '800', lineHeight: 33 },
+  sub: { color: colors.sand, fontSize: 15, lineHeight: 22, marginTop: 8, marginBottom: 20 },
+  cta: { backgroundColor: colors.burnt, borderRadius: 12, minHeight: 54, alignItems: 'center', justifyContent: 'center' },
+  ctaText: { color: colors.white, fontSize: 17, fontWeight: '800' },
+  loginRow: { minHeight: 48, alignItems: 'center', justifyContent: 'center', marginTop: 10 },
+  login: { color: colors.sand, fontSize: 15 },
+});

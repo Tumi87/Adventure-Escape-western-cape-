@@ -1,90 +1,60 @@
 import React, { useState } from 'react';
-import { Alert, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { Screen, Btn, Card } from '../components';
-import FormField from '../components/FormField';
-import { Chip } from '../components';
-import { C } from '../theme';
+import { ScrollView, Text } from 'react-native';
+import Button from '../components/Button';
+import Dropdown from '../components/Dropdown';
+import Field from '../components/Field';
+import SimpleTable from '../components/SimpleTable';
+import { adventures, business } from '../data';
+import { common } from '../styles';
+import { DropdownOption, FormErrors, Navigate } from '../types';
+import { isEmail, isName, isPhone } from '../utils';
 
-const TOPICS = ['Booking', 'Pricing', 'Directions', 'Other'];
+type ContactErrors = FormErrors<'name' | 'email' | 'phone' | 'package' | 'message'>;
 
-function Info({
-  icon,
-  title,
-  sub,
-}: {
-  icon: keyof typeof Ionicons.glyphMap;
-  title: string;
-  sub: string;
-}) {
-  return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 6 }}>
-      <Ionicons name={icon} size={18} color={C.green} />
-      <View style={{ marginLeft: 10 }}>
-        <Text style={{ fontSize: 12, fontWeight: '700' }}>{title}</Text>
-        <Text style={{ fontSize: 10, color: C.muted }}>{sub}</Text>
-      </View>
-    </View>
-  );
-}
+const packageOptions: DropdownOption[] = adventures.map(a => ({ value: String(a.id), label: `${a.name} (R${a.price})` }));
 
-export default function ContactScreen() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [topic, setTopic] = useState('');
-  const [message, setMessage] = useState('');
+export default function ContactScreen({ go, packageId }: { go: Navigate; packageId?: number }) {
+  const [name, setName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [phone, setPhone] = useState<string>('');
+  const [pkg, setPkg] = useState<number | null>(packageId ?? null);
+  const [message, setMessage] = useState<string>('');
+  const [errors, setErrors] = useState<ContactErrors>({});
+  const [sent, setSent] = useState<boolean>(false);
 
-  const send = () => {
-    if (!name || !email.includes('@') || !topic || !message) {
-      Alert.alert('Missing details', 'Please complete every field.');
-      return;
-    }
-    Alert.alert('Enquiry sent', 'Thanks! Our team will get back to you soon.');
-    setName('');
-    setEmail('');
-    setTopic('');
-    setMessage('');
+  const send = (): void => {
+    const e: ContactErrors = {};
+    if (!isName(name)) e.name = 'Enter a valid name.';
+    if (!isEmail(email)) e.email = 'Enter a valid email.';
+    if (!isPhone(phone)) e.phone = 'Enter a valid SA phone number.';
+    if (pkg === null) e.package = 'Please select a package.';
+    if (message.trim().length < 5) e.message = 'Please enter a message.';
+    setErrors(e);
+    setSent(Object.keys(e).length === 0);
   };
 
   return (
-    <Screen title="Contact Us" subtitle="Let's plan an adventure that suits your group.">
-      <Card>
-        <Info icon="call-outline" title="Call us" sub="Phone number to be added" />
-        <Info icon="mail-outline" title="Email us" sub="Email to be confirmed" />
-        <Info icon="location-outline" title="Cape Town, Western Cape" sub="Venue address to be confirmed" />
-        <Info icon="share-social-outline" title="Follow our adventures" sub="Social handles to be added" />
-      </Card>
+    <ScrollView contentContainerStyle={common.pad} keyboardShouldPersistTaps="handled">
+      <Text style={common.h1}>Contact Us</Text>
+      <Field label="Name" value={name} onChangeText={setName} error={errors.name} autoComplete="name" />
+      <Field label="Email Address" value={email} onChangeText={setEmail} error={errors.email} keyboardType="email-address" autoCapitalize="none" />
+      <Field label="Phone Number" value={phone} onChangeText={setPhone} error={errors.phone} keyboardType="phone-pad" />
+      <Dropdown label="Select a Package" value={pkg === null ? null : String(pkg)} options={packageOptions}
+        onChange={v => setPkg(Number(v))} placeholder="Choose a package..." error={errors.package} />
+      <Field label="Message" value={message} onChangeText={setMessage} error={errors.message} multiline style={{ minHeight: 90, textAlignVertical: 'top' }} />
+      <Button title="Send" onPress={send} />
+      {sent && <Text style={common.ok}>Message sent! We will be in touch soon.</Text>}
 
-      <Text style={{ fontSize: 17, fontWeight: '700', color: C.green, marginTop: 14, marginBottom: 6 }}>
-        Send an enquiry
-      </Text>
-      <FormField label="Name" placeholder="Your name" value={name} onChangeText={setName} />
-      <FormField
-        label="Email"
-        placeholder="Email address"
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-        keyboardType="email-address"
-      />
-      <Text style={{ fontSize: 11, fontWeight: '600', marginBottom: 4 }}>Enquiry type</Text>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-        {TOPICS.map((t) => (
-          <Chip key={t} label={t} active={topic === t} onPress={() => setTopic(t)} />
-        ))}
-      </View>
-      <FormField
-        label="Message"
-        placeholder="Tell us what you have in mind..."
-        value={message}
-        onChangeText={setMessage}
-        multiline
-        style={{ minHeight: 90, textAlignVertical: 'top' }}
-      />
-      <Text style={{ fontSize: 10, color: C.muted }}>
-        For families, schools, sports clubs, tourists and corporate teams.
-      </Text>
-      <Btn label="Send enquiry" onPress={send} />
-    </Screen>
+      <Text style={common.h2}>Find us</Text>
+      <Button title="Map and directions" alt onPress={() => go({ name: 'map', venueId: pkg ?? undefined })} />
+
+      <Text style={common.h2}>Business Info</Text>
+      <SimpleTable header={['Item', 'Details']} rows={[
+        ['Location', business.location], ['Email', business.email], ['Phone', business.phone], ['Hours', business.hours],
+      ]} />
+
+      <Text style={common.h2}>Meeting points</Text>
+      <SimpleTable header={['Activity', 'Meeting point']} rows={adventures.map(a => [a.name, a.venue] as [string, string])} />
+    </ScrollView>
   );
 }

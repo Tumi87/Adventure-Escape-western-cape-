@@ -1,56 +1,36 @@
 import React, { useState } from 'react';
-import { Linking, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import { Screen, Btn, Card } from '../components';
-import { FormField } from '../components/FormField';
-import { C } from '../theme';
+import { Linking, ScrollView, Text } from 'react-native';
+import Button from '../components/Button';
+import Dropdown from '../components/Dropdown';
+import SimpleTable from '../components/SimpleTable';
+import { adventures } from '../data';
+import { common } from '../styles';
+import { DropdownOption } from '../types';
 
-export default function MapScreen() {
-  const nav = useNavigation<any>();
-  const [start, setStart] = useState('');
-  const [dest, setDest] = useState('Cape Town, Western Cape');
+const venueOptions: DropdownOption[] = adventures.map(a => ({ value: String(a.id), label: a.name }));
 
-  const openMaps = () => {
-    const url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(
-      start,
-    )}&destination=${encodeURIComponent(dest)}`;
-    Linking.openURL(url);
+export default function MapScreen({ venueId }: { venueId?: number }) {
+  const [venue, setVenue] = useState<number>(venueId ?? 0);
+  const place = adventures[venue].venue;
+
+  const openMap = (): void => {
+    Linking.openURL('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(place));
+  };
+  const directions = (): void => {
+    Linking.openURL('https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(place));
   };
 
   return (
-    <Screen title="Map & Directions" subtitle="Find us in Cape Town, Western Cape.">
-      <View
-        style={{
-          height: 150,
-          borderRadius: 8,
-          backgroundColor: C.mint,
-          borderWidth: 1,
-          borderColor: C.border,
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginVertical: 8,
-        }}
-      >
-        <Ionicons name="location" size={36} color={C.orange} />
-        <Text style={{ fontWeight: '700', color: C.green }}>Cape Town region</Text>
-        <Text style={{ fontSize: 10, color: C.muted }}>Illustrative map · exact venue pending</Text>
-      </View>
+    <ScrollView contentContainerStyle={common.pad}>
+      <Text style={common.h1}>Map and Directions</Text>
+      <Dropdown label="Choose an activity" value={String(venue)} options={venueOptions} onChange={v => setVenue(Number(v))} />
+      <Text style={common.h3}>{adventures[venue].name}</Text>
+      <Text style={common.p}>Meeting point: {place}</Text>
+      <Button title="Get directions" onPress={directions} />
+      <Button title="Open in Maps" alt onPress={openMap} />
 
-      <FormField label="Starting point" placeholder="Enter your address or area" value={start} onChangeText={setStart} />
-      <FormField label="Destination" value={dest} onChangeText={setDest} />
-      <Btn label="Get directions" onPress={openMaps} />
-
-      <Card style={{ backgroundColor: C.mint }}>
-        <Text style={{ fontWeight: '700', color: C.green }}>Venue address to be confirmed</Text>
-        <Text style={{ fontSize: 11, marginTop: 4 }}>
-          Ask our team for the meeting point before travelling. Routes and distances are not yet available.
-        </Text>
-      </Card>
-      <Btn label="Enquire about directions" variant="outline" onPress={() => nav.navigate('Contact')} />
-      <Text style={{ fontSize: 10, color: C.muted }}>
-        Your final meeting point will be shared when your adventure details are confirmed.
-      </Text>
-    </Screen>
+      <Text style={common.h2}>All meeting points</Text>
+      <SimpleTable header={['Activity', 'Meeting point']} rows={adventures.map(a => [a.name, a.venue] as [string, string])} />
+    </ScrollView>
   );
 }

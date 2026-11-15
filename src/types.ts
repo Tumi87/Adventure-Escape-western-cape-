@@ -1,33 +1,61 @@
 import { ImageSourcePropType } from 'react-native';
 
-export type Adventure = {
-  id: string;
-  title: string;
-  short: string;
-  description: string;
-  price: number | null;
-  priceLabel: string;
-  category: 'Packages' | 'Sessions';
+export type ItemType = 'Package' | 'Activity';
+
+export interface Adventure {
+  id: number;
+  name: string;
+  price: number;
+  type: ItemType;
   image: ImageSourcePropType;
-  includes: { icon: string; label: string }[];
-};
+  imageAlt: string;
+  duration: string;
+  summary: string;
+  includes: string[];
+  venue: string;
+}
 
-export type RootStackParamList = {
-  Splash: undefined;
-  Login: undefined;
-  Main: undefined;
-  Overview: { id: string };
-  About: undefined;
-  Reviews: undefined;
-  Payment: undefined;
-  Map: undefined;
-  Fees: undefined;
-  Contact: undefined;
-};
+export interface Review {
+  id: number;
+  adventureId: number;
+  author: string;
+  rating: number;
+  text: string;
+}
 
-export type TabParamList = {
-  Home: undefined;
-  Adventures: undefined;
-  Quote: undefined;
-  Account: undefined;
-};
+export interface User {
+  name: string;
+  email: string;
+}
+
+export interface DropdownOption {
+  value: string;
+  label: string;
+}
+
+export type Screen =
+  | { name: 'splash' }
+  | { name: 'login' }
+  | { name: 'home' }
+  | { name: 'about' }
+  | { name: 'overview'; query?: string }
+  | { name: 'detail'; id: number }
+  | { name: 'fees' }
+  | { name: 'contact'; packageId?: number }
+  | { name: 'payment' }
+  | { name: 'quote' }
+  | { name: 'reviews' }
+  | { name: 'map'; venueId?: number }
+  | { name: 'account' };
+
+export type Navigate = (screen: Screen) => void;
+
+export interface FeeResult {
+  subtotal: number;
+  discountPercent: number;
+  discount: number;
+  vat: number;
+  total: number;
+}
+
+export type FormErrors<K extends string> = Partial<Record<K, string>>;

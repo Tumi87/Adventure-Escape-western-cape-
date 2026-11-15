@@ -1,47 +1,71 @@
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { Alert, Image, Text, View } from 'react-native';
-import { Btn, Card, Screen } from '../components/components';
-import { ADVENTURES } from '../data';
-import { useQuote } from '../QuoteContext';
-import { C } from '../theme';
+import React, { useMemo, useState } from 'react';
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import AdventureCard from '../components/AdventureCard';
+import Dropdown from '../components/Dropdown';
+import { useQuote } from '../context/QuoteContext';
+import { adventures } from '../data';
+import { common } from '../styles';
+import { colors } from '../theme';
+import { DropdownOption, ItemType, Navigate } from '../types';
 
-export default function OverviewScreen() {
-  const nav = useNavigation<any>();
-  const { id } = useRoute<any>().params;
-  const a = ADVENTURES.find((x) => x.id === id) ?? ADVENTURES[0];
-  const q = useQuote();
+type Filter = 'All' | ItemType;
+const filters: { value: Filter; label: string }[] = [
+  { value: 'All', label: 'All' },
+  { value: 'Package', label: 'Packages' },
+  { value: 'Activity', label: 'Individual Activities' },
+];
 
-  const onPress = () => {
-    if (a.price === null) return nav.navigate('Contact');
-    if (q.has(a.id)) return nav.navigate('Quote');
-    q.add(a.id);
-    Alert.alert('Added to quote', `${a.title} is now in your quote.`);
-  };
+const sortOptions: DropdownOption[] = [
+  { value: 'default', label: 'Default order' },
+  { value: 'low', label: 'Price: low to high' },
+  { value: 'high', label: 'Price: high to low' },
+  { value: 'name', label: 'Name: A to Z' },
+];
+
+interface Props { go: Navigate; initialQuery?: string }
+
+export default function OverviewScreen({ go, initialQuery = '' }: Props) {
+  const [query, setQuery] = useState<string>(initialQuery);
+  const [filter, setFilter] = useState<Filter>('All');
+  const [sort, setSort] = useState<string>('default');
+  const { saved, toggleSaved } = useQuote();
+
+  const results = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    const list = adventures.filter(a => (filter === 'All' || a.type === filter) && a.name.toLowerCase().includes(q));
+    if (sort === 'low') return [...list].sort((a, b) => a.price - b.price);
+    if (sort === 'high') return [...list].sort((a, b) => b.price - a.price);
+    if (sort === 'name') return [...list].sort((a, b) => a.name.localeCompare(b.name));
+    return list;
+  }, [query, filter, sort]);
 
   return (
-    <Screen title="Overview" subtitle={`Your guide to the ${a.title}.`}>
-      <Image source={a.image} style={{ width: '100%', height: 170, borderRadius: 10 }} />
-      <Text style={{ color: C.orange, fontWeight: '800', fontSize: 11 }}>Fully guided adventure</Text>
-      <Text style={{ fontSize: 22, fontWeight: '800', color: C.green }}>{a.title}</Text>
-      <Text style={{ fontSize: 20, fontWeight: '800', color: C.orange }}>{a.priceLabel}</Text>
-      <Text style={{ color: C.text }}>{a.description}</Text>
-      <Card>
-        <Text style={{ fontWeight: '800', color: C.green, marginBottom: 4 }}>What's included</Text>
-        {a.includes.map((i) => (
-          <View key={i.label} style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingVertical: 3 }}>
-            <Ionicons name={i.icon as any} size={18} color={C.green} />
-            <Text style={{ color: C.text }}>{i.label}</Text>
-          </View>
+    <ScrollView contentContainerStyle={common.pad} keyboardShouldPersistTaps="handled">
+      <Text style={common.h1}>Overview</Text>
+      <TextInput style={styles.search} placeholder="Search adventures" value={query} onChangeText={setQuery}
+        accessibilityLabel="Search adventures" />
+      <View style={styles.filters}>
+        {filters.map(f => (
+          <TouchableOpacity key={f.value} onPress={() => setFilter(f.value)}
+            style={[common.pill, filter === f.value && { backgroundColor: colors.green, borderColor: colors.green }]}
+            accessibilityRole="button" accessibilityState={{ selected: filter === f.value }}>
+            <Text style={{ color: filter === f.value ? colors.white : colors.ink, fontWeight: '600' }}>{f.label}</Text>
+          </TouchableOpacity>
         ))}
-      </Card>
-      <Text style={{ color: C.muted, fontSize: 12 }}>
-        All ages and fitness levels welcome. Ask us which activities suit your group.
+      </View>
+      <Dropdown label="Sort by" value={sort} options={sortOptions} onChange={setSort} />
+      <Text style={[common.muted, { marginBottom: 10 }]} accessibilityLiveRegion="polite">
+        {results.length ? `${results.length} result${results.length > 1 ? 's' : ''}` : 'No adventures match your search.'}
       </Text>
-      <Btn
-        label={a.price === null ? 'Request pricing' : q.has(a.id) ? 'View my quote' : 'Add to quote'}
-        onPress={onPress}
-      />
-    </Screen>
+      {results.map(a => (
+        <AdventureCard key={a.id} adventure={a} saved={saved.includes(a.id)}
+          onOpen={() => go({ name: 'detail', id: a.id })} onToggleSaved={() => toggleSaved(a.id)} />
+      ))}
+    </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  search: { borderWidth: 2, borderColor: colors.border, borderRadius: 999, paddingVertical: 12, paddingHorizontal: 18, fontSize: 16, color: colors.ink },
+  filters: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginVertical: 10 },
+});

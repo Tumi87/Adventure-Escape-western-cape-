@@ -1,56 +1,54 @@
 import React, { useState } from 'react';
-import { Linking, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import { Screen, Btn, Card } from '../components';
-import { FormField } from '../components/FormField';
-import { C } from '../theme';
+import { ScrollView, Text } from 'react-native';
+import Button from '../components/Button';
+import Field from '../components/Field';
+import { useQuote } from '../context/QuoteContext';
+import { adventures } from '../data';
+import { common } from '../styles';
+import { FormErrors, Navigate } from '../types';
+import { calculateFees, formatRand, isName, isValidExpiry } from '../utils';
 
-export default function MapScreen() {
-  const nav = useNavigation<any>();
-  const [start, setStart] = useState('');
-  const [dest, setDest] = useState('Cape Town, Western Cape');
+type PayErrors = FormErrors<'quote' | 'name' | 'number' | 'expiry' | 'cvv'>;
 
-  const openMaps = () => {
-    const url = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(
-      start,
-    )}&destination=${encodeURIComponent(dest)}`;
-    Linking.openURL(url);
+export default function PaymentScreen({ go }: { go: Navigate }) {
+  const { quote } = useQuote();
+  const fees = calculateFees(quote, adventures);
+  const [name, setName] = useState<string>('');
+  const [number, setNumber] = useState<string>('');
+  const [expiry, setExpiry] = useState<string>('');
+  const [cvv, setCvv] = useState<string>('');
+  const [errors, setErrors] = useState<PayErrors>({});
+  const [ok, setOk] = useState<boolean>(false);
+
+  const pay = (): void => {
+    const e: PayErrors = {};
+    if (quote.length === 0) e.quote = 'Your quote is empty. Add an adventure on the Fees screen.';
+    if (!isName(name)) e.name = 'Enter the name on the card.';
+    if (!/^\d{16}$/.test(number)) e.number = 'Card number must be 16 digits.';
+    if (!isValidExpiry(expiry)) e.expiry = 'Use MM/YY (a date that has not passed).';
+    if (!/^\d{3,4}$/.test(cvv)) e.cvv = 'CVV must be 3 or 4 digits.';
+    setErrors(e);
+    setOk(Object.keys(e).length === 0);
   };
 
   return (
-    <Screen title="Map & Directions" subtitle="Find us in Cape Town, Western Cape.">
-      <View
-        style={{
-          height: 150,
-          borderRadius: 8,
-          backgroundColor: C.mint,
-          borderWidth: 1,
-          borderColor: C.border,
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginVertical: 8,
-        }}
-      >
-        <Ionicons name="location" size={36} color={C.orange} />
-        <Text style={{ fontWeight: '700', color: C.green }}>Cape Town region</Text>
-        <Text style={{ fontSize: 10, color: C.muted }}>Illustrative map · exact venue pending</Text>
-      </View>
+    <ScrollView contentContainerStyle={common.pad} keyboardShouldPersistTaps="handled">
+      <Text style={common.h1}>Payment</Text>
+      <Text style={common.h2}>Order Summary</Text>
+      {quote.map(i => <Text key={i} style={common.p}>{adventures[i].name} – R{adventures[i].price}</Text>)}
+      <Text style={common.p}>Discount ({fees.discountPercent}%): -{formatRand(fees.discount)}</Text>
+      <Text style={common.p}>VAT (15%): {formatRand(fees.vat)}</Text>
+      <Text style={common.h3}>Total: {formatRand(fees.total)}</Text>
+      {!!errors.quote && <Text accessibilityRole="alert" style={common.error}>{errors.quote}</Text>}
 
-      <FormField label="Starting point" placeholder="Enter your address or area" value={start} onChangeText={setStart} />
-      <FormField label="Destination" value={dest} onChangeText={setDest} />
-      <Btn label="Get directions" onPress={openMaps} />
-
-      <Card style={{ backgroundColor: C.mint }}>
-        <Text style={{ fontWeight: '700', color: C.green }}>Venue address to be confirmed</Text>
-        <Text style={{ fontSize: 11, marginTop: 4 }}>
-          Ask our team for the meeting point before travelling. Routes and distances are not yet available.
-        </Text>
-      </Card>
-      <Btn label="Enquire about directions" variant="outline" onPress={() => nav.navigate('Contact')} />
-      <Text style={{ fontSize: 10, color: C.muted }}>
-        Your final meeting point will be shared when your adventure details are confirmed.
-      </Text>
-    </Screen>
+      <Text style={common.h2}>Payment Details</Text>
+      <Field label="Name on Card" value={name} onChangeText={setName} error={errors.name} autoComplete="cc-name" />
+      <Field label="Card Number" value={number} onChangeText={setNumber} error={errors.number} keyboardType="number-pad" maxLength={16} placeholder="16 digits" />
+      <Field label="Expiry (MM/YY)" value={expiry} onChangeText={setExpiry} error={errors.expiry} maxLength={5} placeholder="MM/YY" />
+      <Field label="CVV" value={cvv} onChangeText={setCvv} error={errors.cvv} keyboardType="number-pad" secureTextEntry maxLength={4} />
+      <Button title="Pay Now" onPress={pay} />
+      {ok && <Text style={common.ok}>Payment details accepted. This is a demo, so no money was taken.</Text>}
+      <Button title="Back to fees" alt onPress={() => go({ name: 'fees' })} />
+    </ScrollView>
   );
 }

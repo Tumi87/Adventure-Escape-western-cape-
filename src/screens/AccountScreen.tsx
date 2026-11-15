@@ -1,78 +1,44 @@
-import React, { useState } from 'react';
-import { Alert, Pressable, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import { Screen, Btn, Card } from '../components';
-import { FormField } from '../components/FormField';
-import { C } from '../theme';
+import React from 'react';
+import { ScrollView, Text } from 'react-native';
+import Button from '../components/Button';
+import SimpleTable from '../components/SimpleTable';
+import { useQuote } from '../context/QuoteContext';
+import { adventures } from '../data';
+import { common } from '../styles';
+import { Navigate } from '../types';
 
-type LinkProps = {
-  icon: keyof typeof Ionicons.glyphMap;
-  title: string;
-  sub: string;
-  onPress: () => void;
-};
-
-function LinkRow({ icon, title, sub, onPress }: LinkProps) {
-  return (
-    <Pressable onPress={onPress} style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 10 }}>
-      <Ionicons name={icon} size={18} color={C.green} />
-      <View style={{ flex: 1, marginLeft: 10 }}>
-        <Text style={{ fontSize: 12, fontWeight: '700' }}>{title}</Text>
-        <Text style={{ fontSize: 10, color: C.muted }}>{sub}</Text>
-      </View>
-      <Ionicons name="chevron-forward" size={16} color={C.muted} />
-    </Pressable>
-  );
-}
-
-export default function AccountScreen() {
-  const nav = useNavigation<any>();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
+export default function AccountScreen({ go }: { go: Navigate }) {
+  const { user, saved, quote, logout } = useQuote();
 
   return (
-    <Screen title="Account" subtitle="Your profile, plans and preferences.">
-      <Card style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Ionicons name="person-circle-outline" size={36} color={C.green} />
-        <View style={{ marginLeft: 10, flex: 1 }}>
-          <Text style={{ fontWeight: '700' }}>Guest explorer</Text>
-          <Text style={{ fontSize: 10, color: C.muted }}>Log in or create an account to save details.</Text>
-        </View>
-      </Card>
+    <ScrollView contentContainerStyle={common.pad}>
+      <Text style={common.h1}>My Account</Text>
 
-      <Text style={{ fontSize: 17, fontWeight: '700', color: C.green, marginTop: 14, marginBottom: 6 }}>
-        Profile details
-      </Text>
-      <FormField label="Name" placeholder="Your full name" value={name} onChangeText={setName} />
-      <FormField
-        label="Email"
-        placeholder="Your email address"
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-        keyboardType="email-address"
-      />
-      <FormField
-        label="Phone number"
-        placeholder="Your phone number"
-        value={phone}
-        onChangeText={setPhone}
-        keyboardType="phone-pad"
-      />
-      <Btn label="Save profile" onPress={() => Alert.alert('Profile saved', 'Your details were saved on this device.')} />
+      {user ? (
+        <>
+          <SimpleTable header={['Detail', 'Value']} rows={[
+            ['Name', user.name], ['Email', user.email],
+            ['Saved adventures', String(saved.length)], ['Items in quote', String(quote.length)],
+          ]} />
+          <Button title="Log out" alt onPress={() => { logout(); go({ name: 'login' }); }} style={{ marginTop: 12 }} />
+        </>
+      ) : (
+        <>
+          <Text style={common.p}>You are browsing as a guest. Log in to see your account details.</Text>
+          <Button title="Log in" onPress={() => go({ name: 'login' })} />
+        </>
+      )}
 
-      <LinkRow icon="calendar-outline" title="My bookings" sub="No confirmed bookings" onPress={() => nav.navigate('Quote')} />
-      <LinkRow icon="bookmark-outline" title="Saved quotes" sub="View your adventure plans" onPress={() => nav.navigate('Quote')} />
-      <LinkRow icon="settings-outline" title="Settings" sub="Notifications & privacy" onPress={() => Alert.alert('Settings', 'Coming soon.')} />
+      <Text style={common.h2}>Saved adventures</Text>
+      {saved.length === 0 && <Text style={common.muted}>Nothing saved yet. Tap the heart on an adventure.</Text>}
+      {saved.map(id => (
+        <Button key={id} title={adventures[id].name} alt onPress={() => go({ name: 'detail', id })} />
+      ))}
 
-      <Text
-        style={{ textAlign: 'center', color: C.orange, fontSize: 12, marginTop: 10 }}
-        onPress={() => nav.navigate('Login')}
-      >
-        Log in / Create account →
-      </Text>
-    </Screen>
+      <Text style={common.h2}>Shortcuts</Text>
+      <Button title="My quote" onPress={() => go({ name: 'quote' })} />
+      <Button title="Reviews" alt onPress={() => go({ name: 'reviews' })} />
+      <Button title="Map and directions" alt onPress={() => go({ name: 'map' })} />
+    </ScrollView>
   );
 }
