@@ -87,8 +87,58 @@ Colours: forest green #2D5A3D, burnt orange #B9531F, sand beige #F5E6DA. Logo: t
 
 ## Notes and limits
 - Login is a demo. Any valid email and a password of six or more characters is accepted, and "Remember me" is not stored.
+
+
+
+
+
+
+YouTube video mobile app :https://youtu.be/fzv_KS8eESc?si=HjTtNBWkeKlSPie2 https://youtu.be/fzv_KS8eESc?si=HjTtNBWkeKlSPie2 
+
+
+
 - Quote, saved adventures and login are kept in memory only, so they reset when the app closes.
 - Reviews are sample text and should be replaced with real ones.
 - Payment is a demo and no card details are sent or stored.
 - The map screen opens Google Maps in another app; it is not an embedded map.
 - The Cape Town photo on the splash was cropped from the design screenshot. Replace `assets/cape_town.jpg` with the original photo (same file name) for a sharper image.
+<img width="561" height="1280" alt="12" src="https://github.com/user-attachments/assets/237749c5-85a6-486f-8f77-c3f747f05c27" />
+<img width="561" height="1280" alt="4" src="https://github.com/user-attachments/assets/12c93e36-8094-488f-bc4a-7031501b10d5" />
+<img width="561" height="1280" alt="333" src="https://github.com/user-attachments/assets/c1a5d594-e2c5-4be2-9f10-9bcf794cf538" />
+<img width="561" height="1280" alt="6666" src="https://github.com/user-attachments/assets/544cb0d4-1c8d-4eda-b852-e13132128ee7" />
+<img width="561" height="1280" alt="FC" src="https://github.com/user-attachments/assets/fe05229a-7c41-4e49-8778-ce7b9adc8e84" />
+<img width="561" height="1280" alt="MC56" src="https://github.com/user-attachments/assets/4c3b4638-08b0-4551-a2ef-7e51943298d5" />
+<img width="561" height="1280" alt="NJK" src="https://github.com/user-attachments/assets/73115228-5fef-4ffa-9dea-97080ad87704" />
+<img width="561" height="1280" alt="WhatsApp Image 2026-11-14 at 15 13 01 (1)" src="https://github.com/user-attachments/assets/cf1ab38b-9b48-40a7-b6a2-b1b9dd6a25aa" />
+<img width="561" height="1280" alt="4" src="https://github.com/user-attachments/assets/87933a98-4be9-40e3-aebc-d1f48cc7cb80" />
+<img width="561" height="1280" alt="2" src="https://github.com/user-attachments/assets/9ae9aeb4-dd0d-4e9c-b257-d3eed8da4b08" />
+
+## Reference
+Wande Cape Town, n.d. Cape Town Adventures, activities & attractions. Available at: https://wandercapetown.com/adventures/ [Accessed 1 September 2026] Hawaii Adventure Centre, n.d. Discover Hawai’i’s best activities and adventures. Available at:https://www.hawaiiadventurecenter.com/?gad_source=1&gad_campaignid=23883170 858&gbraid=0AAAAAqbkpvcQX8_dZuhH36jpab6rpj6tq&gclid=Cj0KCQjwteTUBhD4ARIsAE Yjs3oYTgGRaDEDEHX5QoCF7BTG_Dg972x7XKDhv71RymbzcfEMu5qKTCIaAq7uEALw_wc B [Accessed 1 September 2026] Lamaj,D., 2025. Low fidelity wireframes: what is it and how to create it. UX Pilot. Available at: https://uxpilot.ai/blogs/low-fidelity-wireframe [Accessed 1 September 2026] Pinterest,nd. NorthStart mountains logo design. Available at: https://za.pinterest.com/pin/80572280836400033/ [ Accessed 4 September 2026] Lovable,2026. Website navigation best practices for better UX. Available at: https://lovable.dev/guides/website-navigation-best-practices-that-convert [Accessed 4 September 2026] Mapletree Studio, 2026. Responsive Design. Available at: https://mapletree.studio/glossary/responsive-design [ Accessed 4 September 2026] ProfileTree,nd.ProfileTree digital marketing agency [Online]. Available at: https://profiletree.com/ [Accessed 3 September 2026]. Ochwani, J.,2025. Basic Principles of responsive web design.Octect Design Studio. Available at: https://octet.design/basic-principles-of-responsive-web-design [ Accessed 4 September 2026] Laubheimer, P.,2024. Menu design checklist: 17 UX guidelines. Nielsen Norman Group. Available at: https://www.nngroup.com/articles/menu-design/ [Accessed 4 September 2026] Jonremus,2019.Startup_tools.md: Curated directory of the best startup tools [GitHub Gist]. Available at: https://gist.github.com/Jonremus/9f267de65d1afec77af9a515322e8b3a [ Accessed 4 September 2026]
+
+About
+No description, website, or topics provided.
+Resources
+Readme
+Activity
+Stars
+0 stars
+Watchers
+0 watching
+Forks
+0 forks
+Report repository
+Releases
+No releases published
+Contributors
+1
+ (1)
+@Tumi87
+Tumi87
+Languages
+TypeScript
+99.8%
+JavaScript
+0.2%
+Footer
+© 
